@@ -1,0 +1,53 @@
+---
+title: "Volcano 3DRisk"
+author: "Danny Morales"
+date: "2020-08-24"
+categories: ["R"]
+tags: ["R Markdown", "plot", "regression"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(reshape2)
+library(ggplot2)
+library(viridis)
+library(magrittr)
+library(rayshader)
+library(rgl)
+```
+
+## Volcan
+
+```{r echo=FALSE}
+
+#Contours and other lines will automatically be ignored. Here is the volcano dataset:
+
+a = data.frame(x = rnorm(20000, 10, 1.9), y = rnorm(20000, 10, 1.2))
+b = data.frame(x = rnorm(20000, 14.5, 1.9), y = rnorm(20000, 14.5, 1.9))
+c = data.frame(x = rnorm(20000, 9.5, 1.9), y = rnorm(20000, 15.5, 1.9))
+data = rbind(a, b, c)
+
+#Lines
+pp = ggplot(data, aes(x = x, y = y)) +
+  geom_hex(bins = 20, size = 0.5, color = "black") +
+  scale_fill_viridis_c(option = "C")
+
+par(mfrow = c(1, 2))
+plot_gg(pp, width = 5, height = 4, scale = 300, raytrace = FALSE, preview = TRUE)
+plot_gg(pp, width = 5, height = 4, scale = 300, multicore = TRUE, windowsize = c(1000, 800))
+render_camera(fov = 70, zoom = 0.5, theta = 130, phi = 35)
+Sys.sleep(0.2)
+render_snapshot(clear = TRUE)
+
+```
+```{r}
+montereybay %>%
+ sphere_shade(texture="desert") %>%
+ plot_3d(montereybay,zscale=50, windowsize = c(1000, 800))
+render_snapshot(clear = TRUE)
+```
+
